@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Qur'an Digital & Audio</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(rgba(15, 32, 39, 0.85), rgba(32, 58, 67, 0.85), rgba(44, 83, 100, 0.85)), 
+                        url('https://images.unsplash.com/photo-1584286595398-a19f07d1f5fe?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #d1d8e0;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            margin-bottom: 90px;
+        }
+
+        /* === HALAMAN SAMPUL (COVER) === */
+        #halaman-sampul {
+            text-align: center;
+            padding: 30px 20px 20px 20px;
+        }
+        .cover-border {
+            border: 3px double #16a085;
+            padding: 25px 20px;
+            border-radius: 10px;
+            background: linear-gradient(to bottom, #fdfbfb, #ebedee);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        .cover-arab {
+            font-size: 38px;
+            color: #16a085;
+            margin-bottom: 15px;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+        }
+        .cover-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .cover-desc {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .btn-buka {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(22, 160, 133, 0.4);
+            transition: all 0.2s ease;
+        }
+        .btn-buka:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(22, 160, 133, 0.6);
+        }
+        
+        /* Tanda Pembuat / Watermark */
+        .developer-credit {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #555;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 15px;
+        }
+        .developer-credit a {
+            font-weight: bold;
+            color: #16a085;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .developer-credit a:hover {
+            color: #1abc9c;
+            text-decoration: underline;
+        }
+
+        /* === HALAMAN 1: DAFTAR SURAT === */
+        #halaman-utama {
+            display: none;
+        }
+        .surat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e1e1;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+        }
+        .surat-item:hover {
+            background-color: #eef2f7;
+        }
+        .surat-info h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .surat-info p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        .surat-arab {
+            font-size: 22px;
+            font-weight: bold;
+            color: #16a085;
+        }
+        
+        /* === HALAMAN 2: DETAIL AYAT === */
+        #halaman-detail {
+            display: none;
+        }
+        .btn-kembali {
+            background-color: #16a085;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .btn-kembali:hover {
+            background-color: #1abc9c;
+        }
+        .ayat-item {
+            padding: 15px 0;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .nomor-ayat {
+            font-size: 12px;
+            color: #16a085;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .teks-arab {
+            font-size: 26px;
+            text-align: right;
+            direction: rtl;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            color: #1e293b;
+            margin-bottom: 10px;
+            line-height: 2.2;
+        }
+        .teks-latin {
+            font-size: 13px;
+            color: #0284c7;
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+        .teks-indo {
+            font-size: 14px;
+            color: #475569;
+        }
+
+        /* === PEMUTAR AUDIO DI BAWAH === */
+        #audio-player-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 1000;
+        }
+        #judul-audio {
+            margin: 0 0 5px 0;
+            font-size: 13px;
+            color: #38bdf8;
+        }
+        audio {
+            width: 85%;
+            height: 32px;
+        }
+        .loading {
+            text-align: center;
+            color: #555;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="app-title">Al-Qur'an Digital</h1>
+    <p class="subtitle" id="app-subtitle">Lengkap dengan Terjemahan & Audio Murottal</p>
+
+    <div class="container">
+        
+        <!-- ================= HALAMAN 0: SAMPUL (COVER) ================= -->
+        <div id="halaman-sampul">
+            <div class="cover-border">
+                <div class="cover-arab">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                <div class="cover-title">AL-QUR'ANUL KARIM</div>
+                <p class="cover-desc">Digital Web & Mobile Application<br>Baca, Simak, dan Dengarkan Murottal Al-Qur'an kapan saja dan di mana saja.</p>
+                <button class="btn-buka" onclick="bukaAplikasi()">📖 Buka Al-Qur'an</button>
+                
+                <!-- Tanda Pembuat / Watermark dengan Link WhatsApp -->
+                <div class="developer-credit">
+                    Aplikasi ini dibuat oleh : <a href="https://wa.me/6282213054013" target="_blank">ipey phewhekha</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= HALAMAN 1: DAFTAR SURAT ================= -->
+        <div id="halaman-utama">
+            <button class="btn-kembali" onclick="kembaliKeSampul()" style="margin-bottom: 10px;">← Kembali ke Sampul</button>
+            <div id="daftar-surat" class="loading">Memuat data Al-Qur'an...</div>
+        </div>
+
+        <!-- ================= HALAMAN 2: DETAIL AYAT & TERJEMAHAN ================= -->
+        <div id="halaman-detail">
+            <button class="btn-kembali" onclick="kembaliKeDaftar()">← Kembali ke Daftar Surat</button>
+            <h2 id="judul-surat-detail" style="color: #2c3e50; text-shadow: none;"></h2>
+            <div id="daftar-ayat" class="loading">Memuat ayat...</div>
+        </div>
+
+    </div>
+
+    <!-- Pemutar Audio Melayang di Bawah -->
+    <div id="audio-player-container">
+        <p id="judul-audio"></p>
+        <audio id="audio-elem" controls></audio>
+    </div>
+
+    <script>
+        const halamanSampul = document.getElementById('halaman-sampul');
+        const halamanUtama = document.getElementById('halaman-utama');
+        const halamanDetail = document.getElementById('halaman-detail');
+        const daftarSuratDiv = document.getElementById('daftar-surat');
+        const daftarAyatDiv = document.getElementById('daftar-ayat');
+        const judulSuratDetail = document.getElementById('judul-surat-detail');
+        const appTitle = document.getElementById('app-title');
+        const appSubtitle = document.getElementById('app-subtitle');
+
+        function bukaAplikasi() {
+            halamanSampul.style.display = 'none';
+            halamanUtama.style.display = 'block';
+            appSubtitle.innerText = 'Pilih surat untuk membaca dan mendengarkan murottal';
+        }
+
+        function kembaliKeSampul() {
+            halamanUtama.style.display = 'none';
+            halamanSampul.style.display = 'block';
+            appSubtitle.innerText = 'Lengkap dengan Terjemahan & Audio Murottal';
+        }
+
+        // 1. Ambil Data Daftar Surat dari API
+        fetch('https://equran.id/api/v2/surat')
+            .then(response => response.json())
+            .then(data => {
+                daftarSuratDiv.innerHTML = '';
+                data.data.forEach(surat => {
+                    const item = document.createElement('div');
+                    item.className = 'surat-item';
+                    item.innerHTML = `
+                        <div class="surat-info">
+                            <h3>${surat.nomor}. ${surat.namaLatin} (${surat.arti})</h3>
+                            <p>${surat.jumlahAyat} Ayat • ${surat.tempatTurun}</p>
+                        </div>
+                        <div class="surat-arab">${surat.nama}</div>
+                    `;
+
+                    item.addEventListener('click', () => {
+                        bukaDetailSurat(surat.nomor, surat.namaLatin);
+                    });
+
+                    daftarSuratDiv.appendChild(item);
+                });
+            })
+            .catch(error => {
+                daftarSuratDiv.innerHTML = 'Gagal memuat data. Periksa koneksi internet.';
+            });
+
+        // 2. Fungsi untuk Membuka Detail Ayat & Memutar Audio
+        function bukaDetailSurat(nomorSurat, namaSurat) {
+            halamanUtama.style.display = 'none';
+            halamanDetail.style.display = 'block';
+            appSubtitle.style.display = 'none';
+            judulSuratDetail.innerText = `Surat ${namaSurat}`;
+            daftarAyatDiv.innerHTML = '<div class="loading">Memuat ayat dan terjemahan...</div>';
+
+            fetch(`https://equran.id/api/v2/surat/${nomorSurat}`)
+                .then(response => response.json())
+                .then(data => {
+                    const surat = data.data;
+                    daftarAyatDiv.innerHTML = '';
+
+                    surat.ayat.forEach(ayat => {
+                        const ayatItem = document.createElement('div');
+                        ayatItem.className = 'ayat-item';
+                        ayatItem.innerHTML = `
+                            <div class="nomor-ayat">Ayat ${ayat.nomorAyat}</div>
+                            <div class="teks-arab">${ayat.teksArab}</div>
+                            <div class="teks-latin">${ayat.teksLatin}</div>
+                            <div class="teks-indo">${ayat.teksIndonesia}</div>
+                        `;
+                        daftarAyatDiv.appendChild(ayatItem);
+                    });
+
+                    // Putar Audio MP3 Full Surat
+                    const audioUrl = surat.audioFull['01'];
+                    const playerContainer = document.getElementById('audio-player-container');
+                    const audioElement = document.getElementById('audio-elem');
+                    const judulAudio = document.getElementById('judul-audio');
+
+                    judulAudio.innerText = `Memutar: Surat ${namaSurat} (Misyari Rasyid)`;
+                    audioElement.src = audioUrl;
+                    playerContainer.style.display = 'block';
+                    audioElement.play();
+                })
+                .catch(error => {
+                    daftarAyatDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal memuat ayat.</p>';
+                });
+        }
+
+        // 3. Fungsi Kembali ke Daftar Surat
+        function kembaliKeDaftar() {
+            halamanDetail.style.display = 'none';
+            halamanUtama.style.display = 'block';
+            appSubtitle.style.display = 'block';
+            appSubtitle.innerText = 'Pilih surat untuk membaca dan mendengarkan murottal';
+        }
+    </script>
+
+</body>
+</html>
